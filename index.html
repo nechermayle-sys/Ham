@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculus Master Quiz</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Computer Modern', 'Latin Modern Math', 'Times New Roman', serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .floating-symbol {
+      position: fixed;
+      font-size: 28px;
+      opacity: 0.15;
+      animation: float 25s infinite ease-in-out;
+      pointer-events: none;
+      z-index: 1;
+      color: white;
+      font-weight: bold;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(60px, -40px) rotate(45deg);
+      }
+      50% {
+        transform: translate(-40px, 60px) rotate(90deg);
+      }
+      75% {
+        transform: translate(50px, 20px) rotate(135deg);
+      }
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 10;
+      margin: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      color: #4c51bf;
+      font-size: 48px;
+      margin: 0 0 10px 0;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #667eea;
+      font-size: 20px;
+      margin: 0;
+      font-style: italic;
+    }
+
+    .progress-container {
+      background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      text-align: center;
+      border: 2px solid #cbd5e0;
+    }
+
+    .score-display {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .score-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-label {
+      color: #4a5568;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .score-value {
+      color: #2d3748;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .category-selector {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .category-btn {
+      padding: 15px 30px;
+      border: 3px solid #667eea;
+      background: white;
+      color: #4c51bf;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-btn:hover {
+      background: #edf2f7;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .category-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .difficulty-selector {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .difficulty-btn {
+      padding: 10px 20px;
+      border: 2px solid #764ba2;
+      background: white;
+      color: #5a3472;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .difficulty-btn:hover {
+      background: #f3e8ff;
+      transform: scale(1.05);
+    }
+
+    .difficulty-btn.active {
+      background: #764ba2;
+      color: white;
+    }
+
+    .question-card {
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      border-radius: 15px;
+      padding: 35px;
+      margin-bottom: 25px;
+      border: 2px solid #cbd5e0;
+    }
+
+    .question-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #cbd5e0;
+    }
+
+    .question-badge {
+      background: #667eea;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .question-number {
+      color: #4a5568;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .math-problem {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 5px solid #667eea;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .math-expression {
+      font-size: 32px;
+      color: #2d3748;
+      text-align: center;
+      font-family: 'Computer Modern', 'Latin Modern Math', serif;
+      font-style: italic;
+      margin: 15px 0;
+      font-weight: 500;
+    }
+
+    .integral-symbol {
+      font-size: 48px;
+      display: inline-block;
+      margin: 0 5px;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .answer-btn {
+      padding: 18px 20px;
+      background: white;
+      border: 3px solid #a0aec0;
+      border-radius: 10px;
+      color: #2d3748;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+      font-weight: 500;
+      font-family: 'Computer Modern', 'Latin Modern Math', serif;
+    }
+
+    .answer-btn:hover {
+      background: #edf2f7;
+      transform: translateY(-2px);
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .answer-btn.correct {
+      background: #48bb78;
+      color: white;
+      border-color: #38a169;
+      animation: correctPulse 0.5s ease;
+    }
+
+    .answer-btn.incorrect {
+      background: #f56565;
+      color: white;
+      border-color: #e53e3e;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .answer-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .explanation {
+      background: #fff5d6;
+      border-left: 5px solid #f6ad55;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .explanation.show {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .explanation-title {
+      color: #c05621;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .explanation-text {
+      color: #744210;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .next-btn {
+      width: 100%;
+      padding: 18px;
+      background: #4c51bf;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .next-btn:hover {
+      background: #434190;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 81, 191, 0.4);
+    }
+
+    .completion-screen {
+      text-align: center;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      border: 5px solid #4c51bf;
+      border-radius: 50%;
+      width: 220px;
+      height: 220px;
+      margin: 30px auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      animation: badgeSpin 2s ease;
+    }
+
+    @keyframes badgeSpin {
+      0% {
+        transform: rotate(0deg) scale(0);
+        opacity: 0;
+      }
+      60% {
+        transform: rotate(360deg) scale(1.1);
+      }
+      100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .badge-symbol {
+      font-size: 64px;
+      margin-bottom: 10px;
+    }
+
+    .badge-text {
+      color: #2d3748;
+      font-size: 20px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .completion-message {
+      color: #4c51bf;
+      font-size: 28px;
+      margin: 25px 0;
+      font-weight: 700;
+    }
+
+    .final-stats {
+      background: #edf2f7;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 25px 0;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-label {
+      color: #4a5568;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      color: #2d3748;
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .restart-btn {
+      padding: 18px 50px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .restart-btn:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .start-btn {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Floating math symbols -->
+  <div id="floating-symbols"></div>
+  <main class="container">
+   <header>
+    <h1 id="quiz-title">∫ Calculus Master Quiz</h1>
+    <p class="subtitle" id="quiz-subtitle">Test your integral and derivative skills</p>
+   </header>
+   <div id="start-screen">
+    <div class="progress-container">
+     <div class="score-display">
+      <div class="score-item">
+       <div class="score-label">
+        Ready to Begin
+       </div>
+       <div class="score-value">
+        📐
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="category-selector"><button class="category-btn active" data-category="derivatives"> <span>d/dx</span> Derivatives </button> <button class="category-btn" data-category="integrals"> <span>∫</span> Integrals </button> <button class="category-btn" data-category="mixed"> <span>∫ d/dx</span> Mixed </button>
+    </div>
+    <div class="difficulty-selector"><button class="difficulty-btn active" data-level="basic">Basic</button> <button class="difficulty-btn" data-level="intermediate">Intermediate</button> <button class="difficulty-btn" data-level="advanced">Advanced</button>
+    </div><button class="start-btn" id="start-btn">Start Quiz</button>
+   </div>
+   <div id="quiz-screen" class="hidden">
+    <div class="progress-container">
+     <div class="score-display">
+      <div class="score-item">
+       <div class="score-label">
+        Score
+       </div>
+       <div class="score-value" id="score-display">
+        0/0
+       </div>
+      </div>
+      <div class="score-item">
+       <div class="score-label">
+        Streak
+       </div>
+       <div class="score-value" id="streak-display">
+        0 🔥
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="question-container"></div>
+   </div>
+   <div id="completion-screen" class="hidden">
+    <div class="completion-screen">
+     <div class="badge">
+      <div class="badge-symbol">
+       ∫ d/dx
+      </div>
+      <div class="badge-text" id="badge-title">
+       Calculus Master
+      </div>
+     </div>
+     <p class="completion-message" id="completion-message">Excellent work! You've mastered calculus!</p>
+     <div class="final-stats">
+      <div class="stat-item">
+       <div class="stat-label">
+        Final Score
+       </div>
+       <div class="stat-value" id="final-score">
+        0/0
+       </div>
+      </div>
+      <div class="stat-item">
+       <div class="stat-label">
+        Accuracy
+       </div>
+       <div class="stat-value" id="accuracy">
+        0%
+       </div>
+      </div>
+      <div class="stat-item">
+       <div class="stat-label">
+        Best Streak
+       </div>
+       <div class="stat-value" id="best-streak">
+        0 🔥
+       </div>
+      </div>
+     </div><button class="restart-btn" id="restart-btn">Take Quiz Again</button>
+    </div>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#667eea",
+      surface_color: "#ffffff",
+      text_color: "#4c51bf",
+      primary_action_color: "#667eea",
+      secondary_action_color: "#764ba2",
+      font_family: "Times New Roman",
+      font_size: 16,
+      quiz_title: "∫ Calculus Master Quiz",
+      quiz_subtitle: "Test your integral and derivative skills",
+      badge_title: "Calculus Master",
+      completion_message: "Excellent work! You've mastered calculus!"
+    };
+
+    const questions = {
+      derivatives: {
+        basic: [
+          {
+            problem: "d/dx(x²)",
+            answers: ["x²", "2x", "2x²", "x"],
+            correct: 1,
+            explanation: "Using the power rule: d/dx(xⁿ) = n·xⁿ⁻¹, so d/dx(x²) = 2x¹ = 2x"
+          },
+          {
+            problem: "d/dx(5x)",
+            answers: ["5x", "x", "5", "0"],
+            correct: 2,
+            explanation: "The derivative of a linear term ax is simply a, so d/dx(5x) = 5"
+          },
+          {
+            problem: "d/dx(x³)",
+            answers: ["x³", "3x", "x²", "3x²"],
+            correct: 3,
+            explanation: "Using the power rule: d/dx(x³) = 3x³⁻¹ = 3x²"
+          },
+          {
+            problem: "d/dx(10)",
+            answers: ["10", "0", "10x", "1"],
+            correct: 1,
+            explanation: "The derivative of any constant is 0"
+          },
+          {
+            problem: "d/dx(x⁴)",
+            answers: ["x⁴", "4x", "3x³", "4x³"],
+            correct: 3,
+            explanation: "Using the power rule: d/dx(x⁴) = 4x³"
+          }
+        ],
+        intermediate: [
+          {
+            problem: "d/dx(3x² + 2x)",
+            answers: ["3x + 2", "6x", "6x + 2", "5x"],
+            correct: 2,
+            explanation: "Differentiate term by term: d/dx(3x²) = 6x and d/dx(2x) = 2, so the answer is 6x + 2"
+          },
+          {
+            problem: "d/dx(sin x)",
+            answers: ["sin x", "-cos x", "-sin x", "cos x"],
+            correct: 3,
+            explanation: "The derivative of sin x is cos x (trigonometric derivative rule)"
+          },
+          {
+            problem: "d/dx(eˣ)",
+            answers: ["xeˣ⁻¹", "ln x", "eˣ", "x"],
+            correct: 2,
+            explanation: "The exponential function eˣ is its own derivative: d/dx(eˣ) = eˣ"
+          },
+          {
+            problem: "d/dx(x² · x³)",
+            answers: ["x⁵", "5x⁴", "6x⁵", "2x⁵"],
+            correct: 1,
+            explanation: "First simplify: x²·x³ = x⁵, then d/dx(x⁵) = 5x⁴"
+          },
+          {
+            problem: "d/dx(cos x)",
+            answers: ["sin x", "cos x", "-cos x", "-sin x"],
+            correct: 3,
+            explanation: "The derivative of cos x is -sin x (trigonometric derivative rule)"
+          }
+        ],
+        advanced: [
+          {
+            problem: "d/dx(x·sin x)",
+            answers: ["x·cos x", "sin x + x·cos x", "sin x", "cos x"],
+            correct: 1,
+            explanation: "Using the product rule: (fg)' = f'g + fg', so d/dx(x·sin x) = 1·sin x + x·cos x"
+          },
+          {
+            problem: "d/dx(ln x)",
+            answers: ["x", "ln x", "1/x", "eˣ"],
+            correct: 2,
+            explanation: "The derivative of the natural logarithm is: d/dx(ln x) = 1/x"
+          },
+          {
+            problem: "d/dx(x²/x)",
+            answers: ["x", "2", "2x", "1"],
+            correct: 3,
+            explanation: "Simplify first: x²/x = x, then d/dx(x) = 1"
+          },
+          {
+            problem: "d/dx(e²ˣ)",
+            answers: ["e²ˣ", "2xeˣ", "2e²ˣ", "xe²ˣ"],
+            correct: 2,
+            explanation: "Using the chain rule: d/dx(e²ˣ) = e²ˣ · 2 = 2e²ˣ"
+          },
+          {
+            problem: "d/dx(tan x)",
+            answers: ["sec x", "tan²x", "csc²x", "sec²x"],
+            correct: 3,
+            explanation: "The derivative of tan x is sec²x (trigonometric derivative rule)"
+          }
+        ]
+      },
+      integrals: {
+        basic: [
+          {
+            problem: "∫ 2x dx",
+            answers: ["2x² + C", "x² + C", "2x + C", "x + C"],
+            correct: 1,
+            explanation: "∫ 2x dx = 2·∫ x dx = 2·(x²/2) + C = x² + C"
+          },
+          {
+            problem: "∫ 5 dx",
+            answers: ["5 + C", "x + C", "5x + C", "0"],
+            correct: 2,
+            explanation: "The integral of a constant a is ax + C, so ∫ 5 dx = 5x + C"
+          },
+          {
+            problem: "∫ x² dx",
+            answers: ["x³ + C", "2x + C", "x² + C", "x³/3 + C"],
+            correct: 3,
+            explanation: "Using the power rule for integration: ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C, so ∫ x² dx = x³/3 + C"
+          },
+          {
+            problem: "∫ x dx",
+            answers: ["x² + C", "x²/2 + C", "x + C", "1 + C"],
+            correct: 1,
+            explanation: "∫ x dx = x²/2 + C (power rule: increase exponent by 1, divide by new exponent)"
+          },
+          {
+            problem: "∫ 3x² dx",
+            answers: ["3x³ + C", "x²/2 + C", "x³ + C", "6x + C"],
+            correct: 2,
+            explanation: "∫ 3x² dx = 3·∫ x² dx = 3·(x³/3) + C = x³ + C"
+          }
+        ],
+        intermediate: [
+          {
+            problem: "∫ (2x + 3) dx",
+            answers: ["2x² + 3x + C", "x² + x + C", "x² + 3x + C", "2x + C"],
+            correct: 2,
+            explanation: "Integrate term by term: ∫ 2x dx = x² and ∫ 3 dx = 3x, so the answer is x² + 3x + C"
+          },
+          {
+            problem: "∫ cos x dx",
+            answers: ["cos x + C", "-sin x + C", "sin x + C", "-cos x + C"],
+            correct: 2,
+            explanation: "The integral of cos x is sin x + C (since d/dx(sin x) = cos x)"
+          },
+          {
+            problem: "∫ eˣ dx",
+            answers: ["xeˣ + C", "eˣ/x + C", "ln x + C", "eˣ + C"],
+            correct: 3,
+            explanation: "The exponential function eˣ integrates to itself: ∫ eˣ dx = eˣ + C"
+          },
+          {
+            problem: "∫ x³ dx",
+            answers: ["x⁴ + C", "x⁴/4 + C", "3x² + C", "x³ + C"],
+            correct: 1,
+            explanation: "Using the power rule: ∫ x³ dx = x⁴/4 + C"
+          },
+          {
+            problem: "∫ sin x dx",
+            answers: ["cos x + C", "sin x + C", "-sin x + C", "-cos x + C"],
+            correct: 3,
+            explanation: "The integral of sin x is -cos x + C (since d/dx(-cos x) = sin x)"
+          }
+        ],
+        advanced: [
+          {
+            problem: "∫ 1/x dx",
+            answers: ["1/x² + C", "x + C", "ln|x| + C", "log x + C"],
+            correct: 2,
+            explanation: "The integral of 1/x is the natural logarithm: ∫ 1/x dx = ln|x| + C"
+          },
+          {
+            problem: "∫ x·eˣ dx",
+            answers: ["x·eˣ + C", "eˣ + C", "eˣ(x-1) + C", "x²·eˣ/2 + C"],
+            correct: 2,
+            explanation: "Using integration by parts: ∫ x·eˣ dx = x·eˣ - ∫ eˣ dx = x·eˣ - eˣ + C = eˣ(x-1) + C"
+          },
+          {
+            problem: "∫ sec²x dx",
+            answers: ["sec x + C", "sin x + C", "tan x + C", "x + C"],
+            correct: 2,
+            explanation: "The integral of sec²x is tan x + C (since d/dx(tan x) = sec²x)"
+          },
+          {
+            problem: "∫ 2x/(x²+1) dx",
+            answers: ["ln x + C", "ln(x²+1) + C", "x²+1 + C", "2x + C"],
+            correct: 1,
+            explanation: "Let u = x²+1, then du = 2x dx. So ∫ 2x/(x²+1) dx = ∫ du/u = ln|u| + C = ln(x²+1) + C"
+          },
+          {
+            problem: "∫ x√x dx",
+            answers: ["x²√x + C", "(2/3)x³/² + C", "(2/5)x⁵/² + C", "x² + C"],
+            correct: 2,
+            explanation: "Rewrite as ∫ x³/² dx = x⁵/²/(5/2) + C = (2/5)x⁵/² + C"
+          }
+        ]
+      }
+    };
+
+    // Generate mixed questions
+    questions.mixed = {
+      basic: [...questions.derivatives.basic.slice(0, 3), ...questions.integrals.basic.slice(0, 2)],
+      intermediate: [...questions.derivatives.intermediate.slice(0, 3), ...questions.integrals.intermediate.slice(0, 2)],
+      advanced: [...questions.derivatives.advanced.slice(0, 3), ...questions.integrals.advanced.slice(0, 2)]
+    };
+
+    let currentCategory = "derivatives";
+    let currentDifficulty = "basic";
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let streak = 0;
+    let bestStreak = 0;
+    let selectedQuestions = [];
+
+    function createFloatingSymbols() {
+      const symbols = ["∫", "d/dx", "∂", "∑", "π", "∞", "≈", "√"];
+      const container = document.getElementById("floating-symbols");
+      
+      for (let i = 0; i < 20; i++) {
+        const symbol = document.createElement("div");
+        symbol.className = "floating-symbol";
+        symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        symbol.style.left = Math.random() * 100 + "%";
+        symbol.style.top = Math.random() * 100 + "%";
+        symbol.style.animationDelay = Math.random() * 25 + "s";
+        symbol.style.animationDuration = (20 + Math.random() * 10) + "s";
+        container.appendChild(symbol);
+      }
+    }
+
+    function displayQuestion() {
+      const question = selectedQuestions[currentQuestionIndex];
+      const container = document.getElementById("question-container");
+      
+      const badge = question.problem.includes("∫") ? "Integral" : "Derivative";
+      
+      container.innerHTML = `
+        <div class="question-card">
+          <div class="question-header">
+            <span class="question-badge">${badge}</span>
+            <span class="question-number">Question ${currentQuestionIndex + 1} of ${selectedQuestions.length}</span>
+          </div>
+          
+          <div class="math-problem">
+            <div class="math-expression">${question.problem}</div>
+          </div>
+          
+          <div class="answers" id="answers"></div>
+          
+          <div class="explanation" id="explanation">
+            <div class="explanation-title">💡 Explanation</div>
+            <div class="explanation-text">${question.explanation}</div>
+          </div>
+          
+          <button class="next-btn hidden" id="next-question-btn">Next Question →</button>
+        </div>
+      `;
+
+      const answersContainer = document.getElementById("answers");
+      question.answers.forEach((answer, index) => {
+        const btn = document.createElement("button");
+        btn.className = "answer-btn";
+        btn.textContent = answer;
+        btn.onclick = () => selectAnswer(index);
+        answersContainer.appendChild(btn);
+      });
+
+      updateScoreDisplay();
+    }
+
+    function selectAnswer(selectedIndex) {
+      const question = selectedQuestions[currentQuestionIndex];
+      const buttons = document.querySelectorAll(".answer-btn");
+      
+      buttons.forEach((btn, index) => {
+        btn.disabled = true;
+        if (index === question.correct) {
+          btn.classList.add("correct");
+        } else if (index === selectedIndex && selectedIndex !== question.correct) {
+          btn.classList.add("incorrect");
+        }
+      });
+
+      if (selectedIndex === question.correct) {
+        score++;
+        streak++;
+        if (streak > bestStreak) {
+          bestStreak = streak;
+        }
+      } else {
+        streak = 0;
+      }
+
+      document.getElementById("explanation").classList.add("show");
+      document.getElementById("next-question-btn").classList.remove("hidden");
+      updateScoreDisplay();
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById("score-display").textContent = `${score}/${selectedQuestions.length}`;
+      document.getElementById("streak-display").textContent = streak > 0 ? `${streak} 🔥` : "0";
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex < selectedQuestions.length) {
+        displayQuestion();
+      } else {
+        showCompletionScreen();
+      }
+    }
+
+    function showCompletionScreen() {
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("completion-screen").classList.remove("hidden");
+      
+      const accuracy = Math.round((score / selectedQuestions.length) * 100);
+      
+      document.getElementById("final-score").textContent = `${score}/${selectedQuestions.length}`;
+      document.getElementById("accuracy").textContent = `${accuracy}%`;
+      document.getElementById("best-streak").textContent = `${bestStreak} 🔥`;
+    }
+
+    function startQuiz() {
+      selectedQuestions = [...questions[currentCategory][currentDifficulty]];
+      currentQuestionIndex = 0;
+      score = 0;
+      streak = 0;
+      bestStreak = 0;
+
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("completion-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+
+      displayQuestion();
+    }
+
+    function restartQuiz() {
+      document.getElementById("completion-screen").classList.add("hidden");
+      document.getElementById("start-screen").classList.remove("hidden");
+    }
+
+    document.querySelectorAll(".category-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+        currentCategory = this.dataset.category;
+      });
+    });
+
+    document.querySelectorAll(".difficulty-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        document.querySelectorAll(".difficulty-btn").forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+        currentDifficulty = this.dataset.level;
+      });
+    });
+
+    document.getElementById("start-btn").addEventListener("click", startQuiz);
+    document.getElementById("restart-btn").addEventListener("click", restartQuiz);
+
+    document.addEventListener("click", function(e) {
+      if (e.target.id === "next-question-btn") {
+        nextQuestion();
+      }
+    });
+
+    async function onConfigChange(config) {
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'Computer Modern, Latin Modern Math, Times New Roman, serif';
+      const baseSize = config.font_size || defaultConfig.font_size;
+
+      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.secondary_action_color || defaultConfig.secondary_action_color} 100%)`;
+
+      const containers = document.querySelectorAll(".container");
+      containers.forEach(el => el.style.backgroundColor = config.surface_color || defaultConfig.surface_color);
+
+      const titles = document.querySelectorAll("h1");
+      titles.forEach(el => {
+        el.style.color = config.text_color || defaultConfig.text_color;
+        el.style.fontSize = `${baseSize * 3}px`;
+      });
+
+      const subtitles = document.querySelectorAll(".subtitle");
+      subtitles.forEach(el => {
+        el.style.color = config.primary_action_color || defaultConfig.primary_action_color;
+        el.style.fontSize = `${baseSize * 1.25}px`;
+      });
+
+      const categoryBtns = document.querySelectorAll(".category-btn");
+      categoryBtns.forEach(el => {
+        el.style.borderColor = config.primary_action_color || defaultConfig.primary_action_color;
+        el.style.color = config.text_color || defaultConfig.text_color;
+        el.style.fontSize = `${baseSize * 1.125}px`;
+      });
+
+      const activeCategoryBtns = document.querySelectorAll(".category-btn.active");
+      activeCategoryBtns.forEach(el => {
+        el.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+        el.style.color = config.surface_color || defaultConfig.surface_color;
+      });
+
+      const difficultyBtns = document.querySelectorAll(".difficulty-btn");
+      difficultyBtns.forEach(el => {
+        el.style.borderColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+        el.style.fontSize = `${baseSize * 0.9375}px`;
+      });
+
+      const activeDifficultyBtns = document.querySelectorAll(".difficulty-btn.active");
+      activeDifficultyBtns.forEach(el => {
+        el.style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+        el.style.color = config.surface_color || defaultConfig.surface_color;
+      });
+
+      const mathExpressions = document.querySelectorAll(".math-expression");
+      mathExpressions.forEach(el => {
+        el.style.fontSize = `${baseSize * 2}px`;
+      });
+
+      const answerBtns = document.querySelectorAll(".answer-btn");
+      answerBtns.forEach(el => {
+        el.style.fontSize = `${baseSize * 1.125}px`;
+      });
+
+      const nextBtns = document.querySelectorAll(".next-btn");
+      nextBtns.forEach(el => {
+        el.style.backgroundColor = config.text_color || defaultConfig.text_color;
+        el.style.fontSize = `${baseSize * 1.125}px`;
+      });
+
+      const startBtns = document.querySelectorAll(".start-btn");
+      startBtns.forEach(el => {
+        el.style.background = `linear-gradient(135deg, ${config.primary_action_color || defaultConfig.primary_action_color} 0%, ${config.secondary_action_color || defaultConfig.secondary_action_color} 100%)`;
+        el.style.fontSize = `${baseSize * 1.25}px`;
+      });
+
+      const completionMessages = document.querySelectorAll(".completion-message");
+      completionMessages.forEach(el => {
+        el.style.color = config.text_color || defaultConfig.text_color;
+        el.style.fontSize = `${baseSize * 1.75}px`;
+      });
+
+      const restartBtns = document.querySelectorAll(".restart-btn");
+      restartBtns.forEach(el => {
+        el.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+        el.style.fontSize = `${baseSize * 1.125}px`;
+      });
+
+      const badgeTexts = document.querySelectorAll(".badge-text");
+      badgeTexts.forEach(el => {
+        el.style.fontSize = `${baseSize * 1.25}px`;
+      });
+
+      document.getElementById("quiz-title").textContent = config.quiz_title || defaultConfig.quiz_title;
+      document.getElementById("quiz-subtitle").textContent = config.quiz_subtitle || defaultConfig.quiz_subtitle;
+      document.getElementById("badge-title").textContent = config.badge_title || defaultConfig.badge_title;
+      document.getElementById("completion-message").textContent = config.completion_message || defaultConfig.completion_message;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => {
+                config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.primary_action_color || defaultConfig.primary_action_color,
+              set: (value) => {
+                config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+              set: (value) => {
+                config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["quiz_title", config.quiz_title || defaultConfig.quiz_title],
+          ["quiz_subtitle", config.quiz_subtitle || defaultConfig.quiz_subtitle],
+          ["badge_title", config.badge_title || defaultConfig.badge_title],
+          ["completion_message", config.completion_message || defaultConfig.completion_message]
+        ])
+      });
+    }
+
+    createFloatingSymbols();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a12c1c4b15f1ee3',t:'MTc2MzU4NzI4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
